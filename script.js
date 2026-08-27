@@ -158,7 +158,6 @@ renderReviewers();
 const canvas = document.getElementById("star-canvas");
 const ctx = canvas.getContext("2d");
 let stars = [];
-let constellations = [];
 
 function resizeCanvas(){
   canvas.width = window.innerWidth;
@@ -166,7 +165,7 @@ function resizeCanvas(){
 }
 
 function makeStars(){
-  const count = Math.floor((canvas.width * canvas.height) / 14000);
+  const count = Math.floor((canvas.width * canvas.height) / 22000);
   stars = Array.from({ length: count }, () => ({
     x: Math.random() * canvas.width,
     y: Math.random() * canvas.height,
@@ -177,50 +176,9 @@ function makeStars(){
   }));
 }
 
-function makeConstellations(){
-  constellations = [];
-  const clusterCount = Math.max(8, Math.floor(canvas.height / 320));
-  for (let c = 0; c < clusterCount; c++){
-    const cx = Math.random() * canvas.width;
-    const cy = (canvas.height / clusterCount) * c + Math.random() * (canvas.height / clusterCount);
-    const pointCount = 4 + Math.floor(Math.random() * 3);
-    const points = [];
-    for (let p = 0; p < pointCount; p++){
-      points.push({
-        x: cx + (Math.random() - 0.5) * 110,
-        y: cy + (Math.random() - 0.5) * 90,
-        r: Math.random() * 1.6 + 1.2
-      });
-    }
-    // sort left-to-right so the connecting line reads as a shape, not a zigzag
-    points.sort((a, b) => a.x - b.x);
-    constellations.push(points);
-  }
-}
-
 let t = 0;
 function drawStars(){
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  // constellation lines + nodes (gold)
-  ctx.strokeStyle = "rgba(233, 202, 148, 0.28)";
-  ctx.lineWidth = 1;
-  constellations.forEach(points => {
-    for (let i = 0; i < points.length - 1; i++){
-      ctx.beginPath();
-      ctx.moveTo(points[i].x, points[i].y);
-      ctx.lineTo(points[i + 1].x, points[i + 1].y);
-      ctx.stroke();
-    }
-    points.forEach(p => {
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-      ctx.fillStyle = "rgba(255, 214, 102, 0.9)";
-      ctx.fill();
-    });
-  });
-
-  // twinkling stars
   stars.forEach(s => {
     const twinkle = Math.sin(t * s.speed * 40 + s.phase) * 0.4 + 0.6;
     ctx.beginPath();
@@ -228,7 +186,6 @@ function drawStars(){
     ctx.fillStyle = `rgba(233, 202, 148, ${s.baseAlpha * twinkle})`;
     ctx.fill();
   });
-
   t += 1;
   requestAnimationFrame(drawStars);
 }
@@ -236,7 +193,6 @@ function drawStars(){
 function initStars(){
   resizeCanvas();
   makeStars();
-  makeConstellations();
 }
 
 window.addEventListener("resize", initStars);
