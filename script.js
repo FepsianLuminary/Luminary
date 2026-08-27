@@ -179,7 +179,7 @@ function makeStars(){
 
 function makeConstellations(){
   constellations = [];
-  const clusterCount = Math.max(5, Math.floor(canvas.height / 500));
+  const clusterCount = Math.max(8, Math.floor(canvas.height / 320));
   for (let c = 0; c < clusterCount; c++){
     const cx = Math.random() * canvas.width;
     const cy = (canvas.height / clusterCount) * c + Math.random() * (canvas.height / clusterCount);
@@ -187,11 +187,13 @@ function makeConstellations(){
     const points = [];
     for (let p = 0; p < pointCount; p++){
       points.push({
-        x: cx + (Math.random() - 0.5) * 240,
-        y: cy + (Math.random() - 0.5) * 180,
+        x: cx + (Math.random() - 0.5) * 110,
+        y: cy + (Math.random() - 0.5) * 90,
         r: Math.random() * 1.6 + 1.2
       });
     }
+    // sort left-to-right so the connecting line reads as a shape, not a zigzag
+    points.sort((a, b) => a.x - b.x);
     constellations.push(points);
   }
 }
@@ -201,7 +203,7 @@ function drawStars(){
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   // constellation lines + nodes (gold)
-  ctx.strokeStyle = "rgba(233, 202, 148, 0.22)";
+  ctx.strokeStyle = "rgba(233, 202, 148, 0.28)";
   ctx.lineWidth = 1;
   constellations.forEach(points => {
     for (let i = 0; i < points.length - 1; i++){
